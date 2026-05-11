@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAILGUN / Intelligence Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --ink: #0a0a0a;
+  --paper: #f2f0e8;
+  --paper2: #e8e5d8;
+  --paper3: #ddd9c8;
+  --accent: #c8fa3c;
+  --accent2: #ff3c2f;
+  --accent3: #1a1aff;
+  --muted: #8a8778;
+  --rule: rgba(10,10,10,0.12);
+  --f-display: 'Bebas Neue', sans-serif;
+  --f-body: 'Manrope', sans-serif;
+  --f-mono: 'Courier Prime', monospace;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* SPINE NAV */
+.spine {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 72px;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 0;
+  z-index: 200;
+}
+
+.spine-logo {
+  font-family: var(--f-display);
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  margin-bottom: 32px;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.spine-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  align-items: center;
+}
+
+.spine-link {
+  width: 36px; height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: rgba(255,255,255,0.28);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.spine-link:hover, .spine-link.on {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+.spine-link .tip {
+  position: absolute;
+  left: 50px;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.spine-link:hover .tip { opacity: 1; }
+
+.spine-count {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: rgba(255,255,255,0.18);
+  letter-spacing: 1px;
+  margin-top: auto;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* CONTENT */
+.content { margin-left: 72px; }
+
+/* HEADER STRIP */
+.header-strip {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 48px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-bottom: 3px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.hs-item { color: rgba(255,255,255,0.45); }
+.hs-item.hi { color: var(--accent); }
+.hs-sep { color: rgba(255,255,255,0.18); }
+.hs-spacer { margin-left: auto; }
+.hs-score {
+  background: var(--accent);
+  color: var(--ink);
+  padding: 3px 10px;
+  font-weight: 700;
+  border-radius: 2px;
+}
+
+/* HERO */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  min-height: 500px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.hero-left {
+  padding: 56px 48px 44px;
+  border-right: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left::before {
+  content: 'RAIL';
+  position: absolute;
+  bottom: -24px; left: -8px;
+  font-family: var(--f-display);
+  font-size: 260px;
+  color: rgba(10,10,10,0.035);
+  line-height: 1;
+  pointer-events: none;
+  letter-spacing: -8px;
+}
+
+.kicker {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kicker::before {
+  content: '';
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--accent2);
+}
+
+.hero-title {
+  font-family: var(--f-display);
+  font-size: clamp(68px, 8.5vw, 110px);
+  line-height: 0.9;
+  letter-spacing: 2px;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title .hi { color: var(--accent2); }
+
+.hero-dek {
+  font-size: 15.5px;
+  line-height: 1.78;
+  color: #3a3830;
+  max-width: 520px;
+  border-top: 1px solid var(--rule);
+  padding-top: 22px;
+  margin-top: 22px;
+}
+
+.hero-right {
+  background: var(--ink);
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-right-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 28px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding-bottom: 14px;
+}
+
+.score-block {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.score-block:last-child { border-bottom: none; }
+
+.sb-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 8px;
+}
+
+.sb-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+
+.sb-num {
+  font-family: var(--f-display);
+  font-size: 44px;
+  line-height: 1;
+  color: #fff;
+}
+
+.sb-denom { font-family: var(--f-mono); font-size: 12px; color: rgba(255,255,255,0.22); }
+
+.sb-bar { height: 3px; background: rgba(255,255,255,0.08); border-radius: 1px; overflow: hidden; }
+.sb-fill { height: 100%; border-radius: 1px; transition: width 1.6s cubic-bezier(0.16,1,0.3,1); }
+
+.c-lime { background: var(--accent); }
+.c-red  { background: var(--accent2); }
+.c-blue { background: var(--accent3); }
+.c-gold { background: #fbbf24; }
+
+/* SECTIONS */
+section { border-bottom: 2px solid var(--ink); scroll-margin-top: 48px; }
+
+.sec-inner { padding: 60px 48px; }
+
+.sec-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  margin-bottom: 44px;
+}
+
+.sec-num {
+  font-family: var(--f-display);
+  font-size: 72px;
+  line-height: 1;
+  color: var(--paper3);
+  flex-shrink: 0;
+  margin-top: -6px;
+}
+
+.sec-tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.sec-h {
+  font-family: var(--f-display);
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 0.95;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.sec-lead {
+  color: #4a4840;
+  font-size: 15px;
+  line-height: 1.82;
+  max-width: 660px;
+  margin-bottom: 36px;
+}
+
+/* PULL QUOTE */
+.pull {
+  border-top: 3px solid var(--ink);
+  border-bottom: 3px solid var(--ink);
+  padding: 28px 0;
+  margin: 36px 0;
+}
+
+.pull p {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 2.6vw, 36px);
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+}
+
+.pull p em { color: var(--accent2); font-style: normal; }
+.pull-attr { font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 14px; }
+
+/* GRIDS */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--ink); border: 2px solid var(--ink); }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; background: var(--ink); border: 2px solid var(--ink); }
+.g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 2px; background: var(--ink); border: 2px solid var(--ink); }
+
+.cell { background: var(--paper); padding: 26px; transition: background 0.15s; }
+.cell:hover { background: var(--paper2); }
+
+.cell-icon { font-size: 20px; margin-bottom: 12px; display: block; }
+.cell h3 { font-family: var(--f-body); font-size: 13.5px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 7px; color: var(--ink); }
+.cell p { font-size: 13px; color: #4a4840; line-height: 1.7; }
+
+.cell-lime { background: var(--accent) !important; }
+.cell-lime h3, .cell-lime p { color: var(--ink) !important; }
+.cell-red { background: var(--accent2) !important; }
+.cell-red h3, .cell-red p { color: #fff !important; }
+.cell-ink { background: var(--ink) !important; }
+.cell-ink h3, .cell-ink .cell-icon { color: var(--accent) !important; }
+.cell-ink p { color: rgba(255,255,255,0.55) !important; }
+
+/* METRIC STRIP */
+.metric-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  margin-bottom: 36px;
+}
+
+.metric-cell { background: var(--paper); padding: 22px 26px; }
+.mc-label { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.mc-val { font-family: var(--f-display); font-size: 32px; line-height: 1; color: var(--ink); }
+.mc-sub { font-family: var(--f-mono); font-size: 10px; color: var(--muted); margin-top: 5px; }
+
+/* TIMELINE */
+.tl { position: relative; }
+.tl::before { content: ''; position: absolute; left: 26px; top: 0; bottom: 0; width: 2px; background: var(--ink); }
+
+.tl-item { display: grid; grid-template-columns: 56px 1fr; gap: 22px; padding: 28px 0; border-bottom: 1px solid var(--rule); position: relative; }
+.tl-item:last-child { border-bottom: none; }
+
+.tl-marker { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+.tl-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink); z-index: 1; transition: all 0.2s; }
+.tl-item:hover .tl-dot { background: var(--accent); border-color: var(--accent2); transform: scale(1.25); }
+.tl-year { font-family: var(--f-mono); font-size: 9px; letter-spacing: 1px; color: var(--muted); writing-mode: vertical-rl; transform: rotate(180deg); margin-top: 8px; text-transform: uppercase; }
+
+.tl-title { font-family: var(--f-display); font-size: 26px; letter-spacing: 0.5px; color: var(--ink); line-height: 1; margin-bottom: 9px; }
+.tl-text { font-size: 13.5px; color: #4a4840; line-height: 1.75; }
+
+/* SIGNALS */
+.signal-list { display: flex; flex-direction: column; gap: 2px; background: var(--ink); border: 2px solid var(--ink); }
+
+.signal-row {
+  background: var(--paper);
+  padding: 18px 26px;
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 20px;
+  align-items: center;
+  transition: background 0.15s;
+}
+.signal-row:hover { background: var(--paper2); }
+
+.sig-strength { font-family: var(--f-display); font-size: 28px; line-height: 1; color: var(--ink); }
+.sig-strength.high { color: var(--accent2); }
+.sig-strength.med  { color: #d97706; }
+.sig-strength.low  { color: var(--muted); }
+
+.sig-name { font-size: 13.5px; font-weight: 700; margin-bottom: 3px; color: var(--ink); }
+.sig-desc { font-size: 12.5px; color: #4a4840; line-height: 1.6; }
+
+.sig-pill {
+  font-family: var(--f-mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 100px; border: 1.5px solid; white-space: nowrap;
+}
+.pill-high { color: var(--accent2); border-color: var(--accent2); }
+.pill-med  { color: #d97706; border-color: #d97706; }
+
+/* DEPENDENCY CHAINS */
+.chain-wrap { margin: 28px 0; }
+.chain-label { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+
+.chain { display: flex; align-items: stretch; background: var(--ink); border: 2px solid var(--ink); overflow: hidden; }
+.ch-node { flex: 1; background: var(--paper); padding: 14px 16px; font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.3; transition: background 0.15s; }
+.ch-node:hover { background: var(--paper2); }
+.ch-node.end-node { background: var(--ink); color: var(--accent); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.3px; }
+.ch-node.end-node:hover { background: #181818; }
+.ch-arr { display: flex; align-items: center; justify-content: center; background: var(--paper3); padding: 0 9px; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+
+/* SCENARIO */
+.scenario-wrap { background: var(--ink); color: var(--paper); padding: 52px 48px; position: relative; overflow: hidden; }
+.scenario-wrap::before {
+  content: '2035';
+  position: absolute; right: -40px; bottom: -55px;
+  font-family: var(--f-display); font-size: 300px;
+  color: rgba(200,250,60,0.035); line-height: 1; pointer-events: none; letter-spacing: -12px;
+}
+
+.scenario-tag { font-family: var(--f-mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.scenario-title { font-family: var(--f-display); font-size: clamp(38px, 4.8vw, 60px); line-height: 0.95; color: #fff; margin-bottom: 26px; letter-spacing: 1px; }
+.scenario-body { font-size: 14.5px; color: rgba(242,240,232,0.7); line-height: 1.88; max-width: 680px; margin-bottom: 36px; }
+
+.scenario-outcomes {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); position: relative; z-index: 1;
+}
+
+.so-item { background: rgba(255,255,255,0.025); padding: 18px 20px; transition: background 0.15s; }
+.so-item:hover { background: rgba(200,250,60,0.055); }
+.so-num { font-family: var(--f-display); font-size: 26px; color: var(--accent); line-height: 1; margin-bottom: 7px; }
+.so-text { font-size: 12.5px; color: rgba(242,240,232,0.6); line-height: 1.65; }
+
+.prob-list { display: flex; flex-direction: column; gap: 18px; margin-top: 32px; }
+.prob-item {}
+.prob-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+.prob-name { font-size: 13px; font-weight: 600; color: #fff; }
+.prob-pct { font-family: var(--f-display); font-size: 22px; color: var(--accent); line-height: 1; }
+.prob-track { height: 3px; background: rgba(255,255,255,0.08); border-radius: 0; overflow: hidden; }
+.prob-fill { height: 100%; border-radius: 0; transition: width 1.8s cubic-bezier(0.16,1,0.3,1); }
+
+/* RISK TABLE */
+.risk-wrap { border: 2px solid var(--ink); overflow: hidden; }
+.risk-table { width: 100%; border-collapse: collapse; }
+.risk-table thead tr { background: var(--ink); }
+.risk-table th { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.38); padding: 13px 18px; text-align: left; font-weight: 400; }
+.risk-table td { padding: 15px 18px; font-size: 13px; border-bottom: 1px solid var(--rule); vertical-align: middle; color: #3a3830; }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-table tr:hover td { background: var(--paper2); }
+.risk-table .rn { font-weight: 700; color: var(--ink); }
+.rbadge { font-family: var(--f-mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 2px; font-weight: 700; white-space: nowrap; }
+.rb-h { background: var(--accent2); color: #fff; }
+.rb-m { background: #fbbf24; color: var(--ink); }
+.rb-l { background: var(--accent); color: var(--ink); }
+
+/* VERDICT */
+.verdict-split {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  background: var(--ink); border: 2px solid var(--ink); margin: 36px 0;
+}
+
+.vs-block { background: var(--paper); padding: 32px; }
+.vs-head { font-family: var(--f-mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
+.vs-head .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.head-bull .dot { background: #16a34a; }
+.head-bear .dot { background: var(--accent2); }
+.head-bull { color: #16a34a; }
+.head-bear { color: var(--accent2); }
+
+.vs-item { display: flex; gap: 11px; margin-bottom: 14px; align-items: flex-start; }
+.vs-tick { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.vs-text { font-size: 13.5px; color: #3a3830; line-height: 1.65; }
+
+/* FINAL BOX */
+.final-box { background: var(--accent); padding: 44px; position: relative; overflow: hidden; }
+.final-box::before {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 180px; height: 180px; background: rgba(10,10,10,0.05);
+  border-radius: 50%; transform: translate(55px, -55px);
+}
+.final-head { font-family: var(--f-mono); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(10,10,10,0.45); margin-bottom: 18px; }
+.final-text { font-family: var(--f-display); font-size: clamp(26px, 3.2vw, 40px); line-height: 1.06; color: var(--ink); max-width: 780px; letter-spacing: 0.5px; margin-bottom: 28px; }
+.final-text em { color: var(--accent2); font-style: normal; }
+.verdict-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+.vpill { background: var(--ink); color: var(--accent); font-family: var(--f-mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 16px; border-radius: 2px; }
+.vpill span { color: rgba(200,250,60,0.45); margin-right: 6px; }
+
+/* EXPANDABLE */
+details { border-bottom: 1px solid var(--rule); }
+details:first-child { border-top: 2px solid var(--ink); }
+details:last-child { border-bottom: 2px solid var(--ink); }
+summary { padding: 18px 0; cursor: pointer; font-size: 14.5px; font-weight: 600; color: var(--ink); display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; transition: color 0.15s; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '+'; font-family: var(--f-mono); font-size: 20px; color: var(--muted); flex-shrink: 0; margin-left: 14px; }
+details[open] summary::after { content: '—'; }
+details[open] summary { color: var(--accent2); }
+.details-body { padding: 0 0 22px; font-size: 13.5px; color: #4a4840; line-height: 1.82; max-width: 660px; }
+
+/* ECO TABLE */
+.eco-wrap { border: 2px solid var(--ink); overflow: hidden; }
+.eco-table { width: 100%; border-collapse: collapse; }
+.eco-table thead tr { background: var(--ink); }
+.eco-table th { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.38); padding: 13px 18px; text-align: left; font-weight: 400; }
+.eco-table td { padding: 13px 18px; font-size: 13px; border-bottom: 1px solid var(--rule); color: #3a3830; vertical-align: middle; }
+.eco-table tr:last-child td { border-bottom: none; }
+.eco-table tr:hover td { background: var(--paper2); }
+.eco-table .en { font-weight: 700; color: var(--ink); }
+
+/* CHART BOXES */
+.chart-box { border: 2px solid var(--ink); background: var(--paper); padding: 26px; }
+.chart-box-label { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+
+/* GAUGE */
+.gauge-section { display: grid; grid-template-columns: 220px 1fr; gap: 2px; background: var(--ink); border: 2px solid var(--ink); }
+.gauge-left { background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 44px 28px; }
+.gauge-num-big { font-family: var(--f-display); font-size: 90px; line-height: 1; color: var(--accent); }
+.gauge-denom { font-family: var(--f-mono); font-size: 13px; color: rgba(255,255,255,0.18); margin-top: -4px; }
+.gauge-label-text { font-family: var(--f-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.25); margin-top: 14px; text-align: center; }
+.gauge-right { background: var(--paper); padding: 32px; }
+.gauge-title { font-family: var(--f-display); font-size: 30px; color: var(--ink); margin-bottom: 18px; line-height: 1; }
+.gauge-items { display: flex; flex-direction: column; gap: 12px; }
+.gi { display: flex; gap: 12px; align-items: flex-start; }
+.gi-marker { width: 18px; height: 18px; border-radius: 2px; flex-shrink: 0; margin-top: 2px; }
+.gi-text { font-size: 13.5px; color: #3a3830; line-height: 1.6; }
+
+/* FOOTNOTE */
+.footnote { background: var(--paper3); padding: 28px 48px; font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); line-height: 1.8; border-top: 2px solid var(--ink); letter-spacing: 0.3px; }
+
+/* PLAYBOOK */
+.playbook-hero {
+  background: var(--ink);
+  padding: 40px 48px 0;
+  border-bottom: none;
+}
+.pb-kicker {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.pb-title {
+  font-family: var(--f-display);
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 0.95;
+  color: #fff;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+.pb-sub {
+  font-size: 14.5px;
+  color: rgba(242,240,232,0.65);
+  line-height: 1.85;
+  max-width: 680px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.pb-warning {
+  background: rgba(255,60,47,0.12);
+  border: 1px solid rgba(255,60,47,0.3);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 24px 0 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.pb-warn-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.pb-warn-text {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: rgba(255,100,80,0.9);
+  line-height: 1.75;
+  letter-spacing: 0.3px;
+}
+
+.pb-body { background: var(--ink); padding: 0 48px 48px; }
+
+.pb-phases {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 36px 0;
+}
+
+.pb-phase {
+  padding: 24px 22px;
+  background: rgba(255,255,255,0.02);
+  transition: background 0.15s;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.pb-phase:last-child { border-right: none; }
+.pb-phase:hover { background: rgba(200,250,60,0.04); }
+
+.ph-num {
+  font-family: var(--f-display);
+  font-size: 48px;
+  color: rgba(200,250,60,0.2);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.ph-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.ph-title {
+  font-family: var(--f-display);
+  font-size: 22px;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+.ph-body {
+  font-size: 12.5px;
+  color: rgba(242,240,232,0.6);
+  line-height: 1.75;
+}
+.ph-trigger {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(200,250,60,0.5);
+}
+.ph-trigger span {
+  color: var(--accent);
+  display: block;
+  font-size: 10.5px;
+  margin-top: 4px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-family: var(--f-body);
+  font-weight: 500;
+}
+
+.pb-strategies {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 0 0 36px;
+}
+
+.pb-strat {
+  padding: 24px 22px;
+  background: rgba(255,255,255,0.02);
+  transition: background 0.15s;
+}
+.pb-strat:hover { background: rgba(200,250,60,0.04); }
+
+.ps-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 10px;
+}
+.ps-title {
+  font-family: var(--f-display);
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.ps-body {
+  font-size: 12.5px;
+  color: rgba(242,240,232,0.6);
+  line-height: 1.75;
+}
+.ps-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 2px;
+}
+.tag-aggressive { background: rgba(255,60,47,0.2); color: #ff6b5b; }
+.tag-balanced { background: rgba(200,250,60,0.15); color: var(--accent); }
+.tag-conservative { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+
+.pb-catalysts {
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 0 0 36px;
+}
+
+.cat-header {
+  padding: 14px 22px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: grid;
+  grid-template-columns: 1fr 120px 100px;
+  gap: 16px;
+}
+.cat-header span {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+
+.cat-row {
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: grid;
+  grid-template-columns: 1fr 120px 100px;
+  gap: 16px;
+  align-items: center;
+  transition: background 0.15s;
+}
+.cat-row:last-child { border-bottom: none; }
+.cat-row:hover { background: rgba(200,250,60,0.03); }
+
+.cat-name { font-size: 13px; color: #fff; font-weight: 500; }
+.cat-desc { font-size: 11.5px; color: rgba(242,240,232,0.5); margin-top: 3px; }
+
+.cat-impact {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  text-align: center;
+  padding: 4px 10px;
+  border-radius: 2px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.ci-very-high { background: rgba(200,250,60,0.15); color: var(--accent); }
+.ci-high { background: rgba(255,60,47,0.15); color: #ff6b5b; }
+.ci-medium { background: rgba(255,191,36,0.15); color: #fbbf24; }
+
+.cat-timing {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.5px;
+}
+
+.pb-exits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 0 0 36px;
+}
+
+.exit-block { padding: 24px 22px; background: rgba(255,255,255,0.02); }
+.exit-head {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.exit-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.eh-bull { color: #4ade80; }
+.eh-bull .exit-dot { background: #4ade80; }
+.eh-bear { color: #ff6b5b; }
+.eh-bear .exit-dot { background: #ff6b5b; }
+
+.exit-item {
+  display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start;
+}
+.exit-tick { font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.exit-text { font-size: 12.5px; color: rgba(242,240,232,0.6); line-height: 1.65; }
+
+.pb-sizing {
+  border: 1px solid rgba(255,255,255,0.08);
+  margin: 0 0 36px;
+  overflow: hidden;
+}
+
+.sizing-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 80px;
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  align-items: stretch;
+}
+.sizing-row:last-child { border-bottom: none; }
+.sizing-row:first-child { background: rgba(255,255,255,0.04); }
+
+.sr-profile {
+  padding: 16px 20px;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.sr-profile-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+}
+.sr-profile-name { font-size: 13px; color: #fff; font-weight: 600; margin-top: 3px; }
+
+.sr-strategy { padding: 16px 20px; border-right: 1px solid rgba(255,255,255,0.06); font-size: 12.5px; color: rgba(242,240,232,0.6); line-height: 1.65; }
+
+.sr-alloc {
+  padding: 16px 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--f-display);
+  font-size: 26px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.pb-mindset {
+  border-top: 3px solid rgba(255,255,255,0.15);
+  border-bottom: 3px solid rgba(255,255,255,0.15);
+  padding: 28px 0;
+  margin: 0 0 0;
+}
+.pm-text {
+  font-family: var(--f-display);
+  font-size: clamp(20px, 2.4vw, 30px);
+  line-height: 1.1;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.pm-text em { color: var(--accent); font-style: normal; }
+.pm-attr {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-top: 14px;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--paper3); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .spine { display: none; }
+  .content { margin-left: 0; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr 1fr; }
+  .metric-strip { grid-template-columns: 1fr 1fr; }
+  .scenario-outcomes { grid-template-columns: 1fr 1fr; }
+  .verdict-split { grid-template-columns: 1fr; }
+  .gauge-section { grid-template-columns: 1fr; }
+  .sec-inner { padding: 36px 22px; }
+  .scenario-wrap { padding: 36px 22px; }
+  .header-strip { padding: 10px 18px; gap: 12px; font-size: 9px; }
+}
+
+@media (max-width: 600px) {
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .signal-row { grid-template-columns: 60px 1fr; }
+  .sig-pill { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- SPINE NAV -->
+<nav class="spine" aria-label="Section navigation">
+  <div class="spine-logo">RAILGUN</div>
+  <div class="spine-links">
+    <a href="#overview"      class="spine-link on">01<span class="tip">Overview</span></a>
+    <a href="#origin"        class="spine-link">02<span class="tip">Origin</span></a>
+    <a href="#problem"       class="spine-link">03<span class="tip">Problem</span></a>
+    <a href="#why"           class="spine-link">04<span class="tip">Why It Matters</span></a>
+    <a href="#market"        class="spine-link">05<span class="tip">Market</span></a>
+    <a href="#trends"        class="spine-link">06<span class="tip">Trends</span></a>
+    <a href="#signals"       class="spine-link">07<span class="tip">Signals</span></a>
+    <a href="#ecosystem"     class="spine-link">08<span class="tip">Ecosystem</span></a>
+    <a href="#dependency"    class="spine-link">09<span class="tip">Chains</span></a>
+    <a href="#lifecycle"     class="spine-link">10<span class="tip">Lifecycle</span></a>
+    <a href="#ai"            class="spine-link">11<span class="tip">AI Impact</span></a>
+    <a href="#risks"         class="spine-link">12<span class="tip">Risks</span></a>
+    <a href="#scenario"      class="spine-link">13<span class="tip">2035 Sim</span></a>
+    <a href="#survivability" class="spine-link">14<span class="tip">Survival</span></a>
+    <a href="#verdict"       class="spine-link">15<span class="tip">Verdict</span></a>
+    <a href="#playbook"      class="spine-link">16<span class="tip">Investor Playbook</span></a>
+  </div>
+  <div class="spine-count">16 SECTIONS</div>
+</nav>
+
+<div class="content">
+
+<!-- HEADER STRIP -->
+<div class="header-strip">
+  <span class="hs-item hi">RAIL</span>
+  <span class="hs-sep">/</span>
+  <span class="hs-item">RAILGUN</span>
+  <span class="hs-sep">/</span>
+  <span class="hs-item">Privacy Infrastructure</span>
+  <span class="hs-sep">/</span>
+  <span class="hs-item">Ethereum</span>
+  <span class="hs-spacer"></span>
+  <span class="hs-item">Narrative</span>
+  <span class="hs-score">86</span>
+  <span class="hs-item">Relevance</span>
+  <span class="hs-score" style="background:var(--accent2)">90</span>
+  <span class="hs-item">Survival</span>
+  <span class="hs-score" style="background:#fff;color:var(--ink)">78</span>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="overview">
+  <div class="hero-left">
+    <div>
+      <div class="kicker">Intelligence Report · Privacy Infrastructure · 2025</div>
+      <h1 class="hero-title">RAIL<br>GUN<br><span class="hi">PROTOCOL</span></h1>
+    </div>
+    <div class="hero-dek">
+      A deep institutional analysis of RAILGUN — examining its role as potential essential financial privacy infrastructure for an AI-surveilled, on-chain economic future. The problem it solves becomes structurally more important with every advance in artificial intelligence.
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-label">Intelligence Scores · RAIL · 2025</div>
+    <div class="score-block">
+      <div class="sb-label">Narrative Strength</div>
+      <div class="sb-row"><div class="sb-num">86</div><div class="sb-denom">/ 100</div></div>
+      <div class="sb-bar"><div class="sb-fill c-lime" style="width:0%" data-target="86%"></div></div>
+    </div>
+    <div class="score-block">
+      <div class="sb-label">Long-Term Relevance</div>
+      <div class="sb-row"><div class="sb-num" style="color:var(--accent2)">90</div><div class="sb-denom">/ 100</div></div>
+      <div class="sb-bar"><div class="sb-fill c-red" style="width:0%" data-target="90%"></div></div>
+    </div>
+    <div class="score-block">
+      <div class="sb-label">Project Strength</div>
+      <div class="sb-row"><div class="sb-num" style="color:#fbbf24">71</div><div class="sb-denom">/ 100</div></div>
+      <div class="sb-bar"><div class="sb-fill c-gold" style="width:0%" data-target="71%"></div></div>
+    </div>
+    <div class="score-block">
+      <div class="sb-label">Token Strength</div>
+      <div class="sb-row"><div class="sb-num" style="color:rgba(255,255,255,0.35)">58</div><div class="sb-denom">/ 100</div></div>
+      <div class="sb-bar"><div class="sb-fill c-blue" style="width:0%" data-target="58%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 02 ORIGIN -->
+<section id="origin">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">02</div>
+      <div>
+        <div class="sec-tag">Origin Intelligence</div>
+        <div class="sec-h">ORIGIN STORY</div>
+      </div>
+    </div>
+    <p class="sec-lead">How RAILGUN emerged from the structural gap between transparent blockchains and the fundamental human need for financial privacy.</p>
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-marker"><div class="tl-dot"></div><div class="tl-year">2008–18</div></div>
+        <div>
+          <div class="tl-title">The Transparency Bargain</div>
+          <div class="tl-text">Bitcoin and Ethereum introduced trustless, permissionless finance — but the tradeoff was total transparency. Every wallet address, transaction, and position publicly visible to anyone with a block explorer. Acceptable when on-chain economies were small. Untenable at scale.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-marker"><div class="tl-dot"></div><div class="tl-year">2020</div></div>
+        <div>
+          <div class="tl-title">DeFi Summer Exposed the Problem</div>
+          <div class="tl-text">As billions flowed on-chain, sophisticated wallet tracking firms emerged overnight. Institutional actors discovered their trading strategies were visible. DAOs realized their treasuries could be analyzed and front-run. The surveillance problem went from theoretical to urgent in a single season.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-marker"><div class="tl-dot" style="background:var(--accent);border-color:var(--accent2);transform:scale(1.2)"></div><div class="tl-year">2021</div></div>
+        <div>
+          <div class="tl-title">RAILGUN Launches</div>
+          <div class="tl-text">RAILGUN deployed on Ethereum as ZK-SNARK-powered privacy middleware — allowing users to shield balances and transact privately without leaving the Ethereum ecosystem. Unlike mixers, it maintained DeFi composability while providing encrypted transaction state. A privacy layer, not a privacy chain.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-marker"><div class="tl-dot"></div><div class="tl-year">2022+</div></div>
+        <div>
+          <div class="tl-title">ZK Infrastructure Matures Around It</div>
+          <div class="tl-text">As the broader ZK ecosystem accelerated — zkEVMs, ZK rollups, ZK identity — RAILGUN's foundational architecture aligned with the direction of cryptographic infrastructure at large. The protocol sat at the intersection of two accelerating forces: DeFi privacy demand and ZK ecosystem momentum.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 PROBLEM -->
+<section id="problem">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">03</div>
+      <div>
+        <div class="sec-tag">Problem Analysis</div>
+        <div class="sec-h">THE CORE PROBLEM</div>
+      </div>
+    </div>
+    <p class="sec-lead">Financial privacy is not a preference. It is infrastructure. RAILGUN addresses one of the most structurally ignored problems in blockchain systems.</p>
+    <div class="g2" style="margin-bottom:36px;">
+      <div class="cell cell-ink">
+        <span class="cell-icon">🔍</span>
+        <h3>The Transparent Ledger Problem</h3>
+        <p>Every Ethereum wallet is a public dossier. Your entire financial history — positions, counterparties, behavioral patterns, wealth levels — visible to anyone, from competitors to governments to AI systems trained to extract financial intelligence at scale.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">🧠</span>
+        <h3>The Social Graph Exposure</h3>
+        <p>Transparent blockchains don't just expose individual transactions — they expose relationship networks. Who you transact with, how often, and the patterns of exchange create a complete social graph analyzable to reveal organizations, strategies, and private associations.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">🏛️</span>
+        <h3>Institutional Position Leakage</h3>
+        <p>DAOs managing multi-million dollar treasuries, corporations exploring on-chain finance, institutional DeFi participants — all face the same reality: positions are front-runnable, strategies imitable, risk exposure calculable by competitors before execution.</p>
+      </div>
+      <div class="cell cell-lime">
+        <span class="cell-icon">⚡</span>
+        <h3>Behavioral Profiling at Scale</h3>
+        <p>On-chain data is permanent. A pattern of transactions from 2020 remains readable in 2030. As AI systems grow more sophisticated at behavioral analysis, historical transaction data becomes increasingly powerful intelligence — permanently disadvantaging those who transacted openly.</p>
+      </div>
+    </div>
+    <div class="pull">
+      <p>The internet solved transport-layer privacy with HTTPS. Encrypted messaging solved communication privacy. Neither was considered essential until <em>scale made the absence intolerable.</em></p>
+      <div class="pull-attr">Analysis · Core Problem · RAILGUN Intelligence Report</div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 WHY -->
+<section id="why">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">04</div>
+      <div>
+        <div class="sec-tag">Strategic Importance</div>
+        <div class="sec-h">WHY THIS MATTERS</div>
+      </div>
+    </div>
+    <p class="sec-lead">The importance of on-chain privacy infrastructure compounds with every development in AI, surveillance technology, and mainstream blockchain adoption.</p>
+    <div class="g3">
+      <div class="cell">
+        <span class="cell-icon">🛡️</span>
+        <h3>Privacy as Infrastructure</h3>
+        <p>Privacy systems follow a specific adoption curve: ignored → niche → essential. HTTPS, VPNs, and Signal all followed this arc. RAILGUN is building the layer that may sit below every private DeFi interaction in a mature on-chain economy.</p>
+      </div>
+      <div class="cell cell-ink">
+        <span class="cell-icon">🤖</span>
+        <h3>AI Surveillance Resistance</h3>
+        <p>AI analysis tools targeting on-chain data represent a structural threat that grows more powerful each year. Privacy infrastructure becomes more valuable as adversarial capabilities against transparent systems become more sophisticated.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">🔗</span>
+        <h3>DeFi Composability</h3>
+        <p>Unlike privacy chains that isolate users, RAILGUN maintains composability — users interact with Ethereum protocols from within shielded state. This architectural decision may prove decisive for institutional adoption.</p>
+      </div>
+      <div class="cell cell-lime">
+        <span class="cell-icon">📋</span>
+        <h3>Regulatory Alignment</h3>
+        <p>ZK proofs allow selective disclosure — proving compliance without revealing full transaction history. This positions RAILGUN better for regulated finance than opaque mixing approaches. Post-Tornado, this distinction matters enormously.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">🏢</span>
+        <h3>Enterprise & DAO Demand</h3>
+        <p>DAOs with public treasuries, corporations testing on-chain payroll, institutions building DeFi strategies all require privacy the base layer cannot provide. The enterprise market for privacy middleware is largely untapped.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">⚙️</span>
+        <h3>ZK Infrastructure Momentum</h3>
+        <p>The broader ZK ecosystem — zkEVMs, ZK rollups, ZK identity — creates a rising tide of developer familiarity and tooling. RAILGUN's cryptographic foundation becomes more legible and composable as ZK matures.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 MARKET -->
+<section id="market">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">05</div>
+      <div>
+        <div class="sec-tag">Market Intelligence</div>
+        <div class="sec-h">MARKET DATA</div>
+      </div>
+    </div>
+    <div class="metric-strip">
+      <div class="metric-cell">
+        <div class="mc-label">Market Position</div>
+        <div class="mc-val" style="font-size:26px;color:var(--accent2)">Niche</div>
+        <div class="mc-sub">Infrastructure Layer</div>
+      </div>
+      <div class="metric-cell" style="background:var(--ink)">
+        <div class="mc-label" style="color:rgba(255,255,255,0.32)">Mainstream Attention</div>
+        <div class="mc-val" style="font-size:26px;color:var(--accent)">Low</div>
+        <div class="mc-sub" style="color:rgba(255,255,255,0.25)">Early positioning signal</div>
+      </div>
+      <div class="metric-cell">
+        <div class="mc-label">Developer Interest</div>
+        <div class="mc-val" style="font-size:26px;color:#d97706">Moderate</div>
+        <div class="mc-sub">Growing ZK ecosystem</div>
+      </div>
+      <div class="metric-cell">
+        <div class="mc-label">Institutional Readiness</div>
+        <div class="mc-val" style="font-size:26px;">Early</div>
+        <div class="mc-sub">Pre-adoption discovery</div>
+      </div>
+    </div>
+    <div class="g2" style="margin-bottom:36px;">
+      <div class="chart-box">
+        <div class="chart-box-label">Strength Assessment · All Scores / 100</div>
+        <div style="position:relative;height:240px;"><canvas id="radarChart" aria-label="Radar chart of RAILGUN scores"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-box-label">Projected Attention Curve · 2021 → 2035</div>
+        <div style="position:relative;height:240px;"><canvas id="attentionChart" aria-label="Attention growth projection"></canvas></div>
+      </div>
+    </div>
+    <div class="pull" style="margin-top:0">
+      <p>A critical divergence: narrative strength (<em>86</em>) and long-term relevance (90) significantly exceed token strength (58). This is the classic early-infrastructure pricing pattern.</p>
+      <div class="pull-attr">Market Intelligence · Score Analysis</div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 TRENDS -->
+<section id="trends">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">06</div>
+      <div>
+        <div class="sec-tag">Trend Intelligence</div>
+        <div class="sec-h">TREND ANALYSIS</div>
+      </div>
+    </div>
+    <p class="sec-lead">Six macro-trends that structurally increase demand for on-chain privacy infrastructure over the next decade.</p>
+    <details><summary>AI-Driven Wallet Intelligence Expansion</summary><div class="details-body">AI systems capable of analyzing entire blockchain histories at scale represent a structural threat to transparent wallets. LLM-enhanced on-chain analysis tools infer intent, strategy, and risk from transaction patterns with far greater accuracy than rule-based systems. As these tools democratize, by 2030 sophisticated wallet behavior analysis may be accessible to retail competitors — not just institutions. This trend alone justifies privacy infrastructure demand independent of every other factor.</div></details>
+    <details><summary>Global Data Privacy Regulation Expansion</summary><div class="details-body">GDPR introduced data minimization — collecting only what's necessary. Blockchain's permanent, public data model is the antithesis of this principle. As regulators across the EU, Brazil, India, and beyond pass data privacy legislation, pressure on public blockchain architectures will intensify. ZK-based privacy systems — which prove compliance without revealing data — may be better positioned for regulatory environments than raw transparent chains.</div></details>
+    <details><summary>Institutional DeFi Treasury Management</summary><div class="details-body">DAOs collectively manage billions in on-chain treasury assets. Every large DAO treasury is a public target — holdings visible, movements predictable, strategies imitable. As institutional-quality treasury operations migrate on-chain, the need for confidential transaction infrastructure becomes a prerequisite, not a feature. Privacy is not optional for enterprise; it is a baseline requirement.</div></details>
+    <details><summary>ZK Infrastructure Ecosystem Maturation</summary><div class="details-body">The broader ZK infrastructure buildout — zkEVMs, ZK rollups, ZK identity systems, and ZK proof libraries — creates a rising tide benefiting all ZK-based protocols. As developer familiarity grows, integration with RAILGUN becomes easier. As ZK hardware accelerators reduce proving costs, UX improves. The protocol is embedded in an accelerating ecosystem, not isolated from it.</div></details>
+    <details><summary>On-Chain AI Agent Financial Operations</summary><div class="details-body">Autonomous AI agents are beginning to manage on-chain assets — executing DeFi strategies, managing portfolios, interacting with smart contracts autonomously. These agents require financial privacy for competitive advantage: an AI agent executing an arbitrage strategy visible to front-running bots is an ineffective agent. The intersection of AI autonomy and on-chain finance creates a novel demand category for privacy infrastructure that did not exist three years ago.</div></details>
+    <details><summary>Post-Mixer Regulatory Clarity</summary><div class="details-body">The regulatory treatment of Tornado Cash demonstrated that opacity-only privacy approaches face existential risk. RAILGUN's ZK-proof architecture — which allows selective disclosure — is architecturally distinct from mixers. The post-Tornado landscape creates an opportunity for ZK-based privacy protocols that can demonstrate compliance capability. This regulatory differentiation is a structural advantage largely unrecognized by current market participants.</div></details>
+  </div>
+</section>
+
+<!-- 07 SIGNALS -->
+<section id="signals">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">07</div>
+      <div>
+        <div class="sec-tag">Intelligence Signals</div>
+        <div class="sec-h">HIDDEN SIGNALS</div>
+      </div>
+    </div>
+    <p class="sec-lead">Low-attention indicators that institutional analysts track ahead of mainstream recognition.</p>
+    <div class="signal-list">
+      <div class="signal-row">
+        <div class="sig-strength high">HIGH</div>
+        <div><div class="sig-name">AI Surveillance Capability Acceleration</div><div class="sig-desc">LLM-enhanced on-chain analysis creates a structural threat that compounds with every AI improvement. Currently underweighted by participants focused on short-term token narratives.</div></div>
+        <span class="sig-pill pill-high">Critical Signal</span>
+      </div>
+      <div class="signal-row">
+        <div class="sig-strength high">HIGH</div>
+        <div><div class="sig-name">ZK Infrastructure Ecosystem Expansion</div><div class="sig-desc">Ethereum's zkEVM rollup ecosystem, ZK identity protocols, and proof library maturation all benefit RAILGUN indirectly — reducing integration friction, improving UX, expanding developer base.</div></div>
+        <span class="sig-pill pill-high">Critical Signal</span>
+      </div>
+      <div class="signal-row">
+        <div class="sig-strength high">HIGH</div>
+        <div><div class="sig-name">Narrative–Token Score Divergence (86 vs 58)</div><div class="sig-desc">The gap between narrative strength and token recognition is itself an intelligence signal. Infrastructure protocols historically trade at narrative discounts during early phases, with value recognition lagging adoption by years.</div></div>
+        <span class="sig-pill pill-high">Critical Signal</span>
+      </div>
+      <div class="signal-row">
+        <div class="sig-strength med">MED</div>
+        <div><div class="sig-name">Institutional Interest in Privacy Tooling</div><div class="sig-desc">Early-stage experimentation by institutional actors exploring on-chain treasury management is generating internal discussions about privacy requirements — rarely reaching public forums.</div></div>
+        <span class="sig-pill pill-med">Watch Signal</span>
+      </div>
+      <div class="signal-row">
+        <div class="sig-strength med">MED</div>
+        <div><div class="sig-name">Global Data Privacy Regulation Expansion</div><div class="sig-desc">Emerging frameworks asserting financial data privacy rights create potential regulatory tailwinds for compliant privacy infrastructure. ZK selective disclosure positions RAILGUN favorably versus opacity-only approaches.</div></div>
+        <span class="sig-pill pill-med">Watch Signal</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 ECOSYSTEM -->
+<section id="ecosystem">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">08</div>
+      <div>
+        <div class="sec-tag">Ecosystem Mapping</div>
+        <div class="sec-h">ECOSYSTEM</div>
+      </div>
+    </div>
+    <p class="sec-lead">The network of use cases, integrations, and deployment contexts that define RAILGUN's ecosystem surface area.</p>
+    <div class="eco-wrap">
+      <table class="eco-table">
+        <thead><tr><th>Use Case</th><th>Category</th><th>Readiness</th><th>Impact</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="en">DAO Treasury Privacy</td><td>Governance</td><td><span class="rbadge rb-m">Early</span></td><td style="color:#16a34a;font-weight:700">Very High</td><td>Billions in DAO treasury assets exposed; enterprise need confirmed</td></tr>
+          <tr><td class="en">Private DeFi Positions</td><td>DeFi</td><td><span class="rbadge rb-m">Early</span></td><td style="color:#16a34a;font-weight:700">Very High</td><td>Largest immediately accessible use case; front-running prevention</td></tr>
+          <tr><td class="en">AI Agent Transactions</td><td>AI Infrastructure</td><td><span class="rbadge rb-h">Emerging</span></td><td style="color:#16a34a;font-weight:700">Very High</td><td>Novel category; autonomous agents need privacy for strategy protection</td></tr>
+          <tr><td class="en">Institutional Wallet Protection</td><td>Institutional</td><td><span class="rbadge rb-h">Nascent</span></td><td style="color:#16a34a;font-weight:700">Very High</td><td>Institutional DeFi adoption requires confidential position management</td></tr>
+          <tr><td class="en">Private Payroll Systems</td><td>Enterprise</td><td><span class="rbadge rb-h">Nascent</span></td><td style="color:#d97706;font-weight:700">High</td><td>On-chain salary payments expose employee financial data</td></tr>
+          <tr><td class="en">Private Arbitrage Execution</td><td>DeFi Trading</td><td><span class="rbadge rb-m">Early</span></td><td style="color:#d97706;font-weight:700">High</td><td>Competitive MEV and arbitrage strategies benefit from execution opacity</td></tr>
+          <tr><td class="en">Business Transaction Privacy</td><td>Enterprise</td><td><span class="rbadge rb-h">Nascent</span></td><td style="color:#d97706;font-weight:700">High</td><td>B2B payments on-chain require supplier relationship confidentiality</td></tr>
+          <tr><td class="en">ZK Identity Integration</td><td>Identity</td><td><span class="rbadge rb-h">Future</span></td><td style="color:#d97706;font-weight:700">High</td><td>Selective disclosure for KYC/AML compliance without full transparency</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 09 DEPENDENCY -->
+<section id="dependency">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">09</div>
+      <div>
+        <div class="sec-tag">Future Dependency Analysis</div>
+        <div class="sec-h">DEPENDENCY CHAINS</div>
+      </div>
+    </div>
+    <p class="sec-lead">Four independent macro-technological vectors — all converging simultaneously on demand for privacy infrastructure.</p>
+    <div class="chain-wrap">
+      <div class="chain-label">Chain 01 — The AI Surveillance Vector</div>
+      <div class="chain">
+        <div class="ch-node">AI Capability Growth</div><div class="ch-arr">→</div>
+        <div class="ch-node">On-Chain Behavioral Analysis</div><div class="ch-arr">→</div>
+        <div class="ch-node">Wallet Intelligence Firms</div><div class="ch-arr">→</div>
+        <div class="ch-node">Structural Privacy Threat</div><div class="ch-arr">→</div>
+        <div class="ch-node end-node">Privacy Infra Demand ↑</div>
+      </div>
+    </div>
+    <div class="chain-wrap">
+      <div class="chain-label">Chain 02 — The Institutional DeFi Vector</div>
+      <div class="chain">
+        <div class="ch-node">DeFi Maturation</div><div class="ch-arr">→</div>
+        <div class="ch-node">Institutional On-Chain Entry</div><div class="ch-arr">→</div>
+        <div class="ch-node">Position Confidentiality Req.</div><div class="ch-arr">→</div>
+        <div class="ch-node">Privacy Middleware Need</div><div class="ch-arr">→</div>
+        <div class="ch-node end-node">RAILGUN Adoption Potential ↑</div>
+      </div>
+    </div>
+    <div class="chain-wrap">
+      <div class="chain-label">Chain 03 — The ZK Infrastructure Vector</div>
+      <div class="chain">
+        <div class="ch-node">ZK Ecosystem Buildout</div><div class="ch-arr">→</div>
+        <div class="ch-node">Developer ZK Familiarity</div><div class="ch-arr">→</div>
+        <div class="ch-node">Hardware Acceleration</div><div class="ch-arr">→</div>
+        <div class="ch-node">Lower Integration Friction</div><div class="ch-arr">→</div>
+        <div class="ch-node end-node">Privacy Composability ↑</div>
+      </div>
+    </div>
+    <div class="chain-wrap">
+      <div class="chain-label">Chain 04 — The Autonomous AI Agent Vector</div>
+      <div class="chain">
+        <div class="ch-node">AI Agents Managing Assets</div><div class="ch-arr">→</div>
+        <div class="ch-node">On-Chain Strategy Execution</div><div class="ch-arr">→</div>
+        <div class="ch-node">Front-Running Vulnerability</div><div class="ch-arr">→</div>
+        <div class="ch-node">Agent Privacy Need</div><div class="ch-arr">→</div>
+        <div class="ch-node end-node">Novel Demand Category ↑</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 LIFECYCLE -->
+<section id="lifecycle">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">10</div>
+      <div>
+        <div class="sec-tag">Lifecycle Intelligence</div>
+        <div class="sec-h">NARRATIVE LIFECYCLE</div>
+      </div>
+    </div>
+    <p class="sec-lead">Where RAILGUN sits in the infrastructure adoption curve — and what the historical pattern of privacy technology adoption predicts for its trajectory.</p>
+    <div class="chart-box" style="margin-bottom:36px;">
+      <div class="chart-box-label">Privacy Infrastructure Adoption Curve · Historical vs Projected</div>
+      <div style="position:relative;height:280px;"><canvas id="lifecycleChart" aria-label="Adoption curve comparison"></canvas></div>
+    </div>
+    <div class="g4" style="margin-bottom:36px;">
+      <div class="metric-cell" style="border:2px solid var(--ink)">
+        <div class="mc-label">HTTPS</div>
+        <div class="mc-val" style="font-size:20px">1994→2010+</div>
+        <div class="mc-sub">16 yrs from invention to widespread adoption. Now universal.</div>
+      </div>
+      <div class="metric-cell" style="border:2px solid var(--ink);background:var(--ink)">
+        <div class="mc-label" style="color:rgba(255,255,255,0.32)">E2E Encryption</div>
+        <div class="mc-val" style="font-size:20px;color:var(--accent)">2013→2020</div>
+        <div class="mc-sub" style="color:rgba(255,255,255,0.28)">Snowden catalyzed mass adoption of encrypted messaging.</div>
+      </div>
+      <div class="metric-cell" style="border:2px solid var(--ink)">
+        <div class="mc-label">VPN Infrastructure</div>
+        <div class="mc-val" style="font-size:20px">2000→2018</div>
+        <div class="mc-sub">18 years from enterprise-only to consumer essential.</div>
+      </div>
+      <div class="metric-cell" style="border:2px solid var(--ink)">
+        <div class="mc-label">Cloud Security</div>
+        <div class="mc-val" style="font-size:20px">2006→2015</div>
+        <div class="mc-sub">9 years to become standard infrastructure spend.</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="cell cell-ink">
+        <span class="cell-icon">📍</span>
+        <h3>Current: Early Infrastructure</h3>
+        <p>RAILGUN occupies the "undervalued and misunderstood" phase that characterized AWS in 2008 and HTTPS in 2000. Defined by low mainstream attention, high technical understanding among builders, and a gap between narrative strength and market recognition.</p>
+      </div>
+      <div class="cell">
+        <span class="cell-icon">🔮</span>
+        <h3>Future: Potential Essential Layer</h3>
+        <p>If dependency chains materialize — AI surveillance growth, institutional DeFi, ZK maturation — RAILGUN transitions from niche privacy tool to essential infrastructure for on-chain economic activity. Contingent on execution and regulatory navigation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 AI -->
+<section id="ai">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">11</div>
+      <div>
+        <div class="sec-tag">AI Interaction Analysis</div>
+        <div class="sec-h">AI IMPACT</div>
+      </div>
+    </div>
+    <p class="sec-lead">The relationship between AI advancement and on-chain privacy demand is mechanistically causal — not merely correlated.</p>
+    <div class="g2" style="margin-bottom:0">
+      <div style="display:flex;flex-direction:column;gap:2px;background:var(--ink);border:2px solid var(--ink)">
+        <div class="cell" style="flex:1">
+          <span class="cell-icon" style="font-size:12px;font-family:var(--f-mono);color:var(--accent2);font-weight:700">01</span>
+          <h3>Pattern Recognition at Scale</h3>
+          <p>AI analyzes millions of transactions simultaneously to infer strategies, predict behavior, and identify vulnerabilities. What once required expensive manual analysis is now automated and scalable to any wallet.</p>
+        </div>
+        <div class="cell" style="flex:1">
+          <span class="cell-icon" style="font-size:12px;font-family:var(--f-mono);color:var(--accent2);font-weight:700">02</span>
+          <h3>Behavioral Prediction</h3>
+          <p>On-chain history becomes a training dataset for predicting future actions. AI builds models of individual wallet behavior with high accuracy — enabling preemptive front-running and strategic interference.</p>
+        </div>
+        <div class="cell" style="flex:1">
+          <span class="cell-icon" style="font-size:12px;font-family:var(--f-mono);color:var(--accent2);font-weight:700">03</span>
+          <h3>Social Graph Inference</h3>
+          <p>LLMs trained on blockchain data can map organizational structures, identify decision-makers behind wallet clusters, and infer private networks — intelligence traditionally requiring law enforcement resources.</p>
+        </div>
+        <div class="cell cell-lime" style="flex:1">
+          <span class="cell-icon" style="font-size:12px;font-family:var(--f-mono);color:var(--accent2);font-weight:700">04</span>
+          <h3>Autonomous Agent Competition</h3>
+          <p>As AI agents compete on-chain, transaction transparency becomes a decisive competitive disadvantage. Agents operating through privacy infrastructure gain structural advantages over those executing publicly.</p>
+        </div>
+      </div>
+      <div class="chart-box" style="border-left:none">
+        <div class="chart-box-label">AI Surveillance Threat Level by Actor Type</div>
+        <div style="position:relative;height:320px;"><canvas id="aiThreatChart" aria-label="AI threat level by actor type"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 RISKS -->
+<section id="risks">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">12</div>
+      <div>
+        <div class="sec-tag">Risk Intelligence</div>
+        <div class="sec-h">LONG-TERM RISKS</div>
+      </div>
+    </div>
+    <p class="sec-lead">Rigorous risk analysis separating structural risks — which could invalidate the narrative — from execution risks which could impair this project while the narrative survives.</p>
+    <div class="risk-wrap">
+      <table class="risk-table">
+        <thead><tr><th>Risk Factor</th><th>Category</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr><td class="rn">Regulatory Prohibition</td><td>Structural</td><td><span class="rbadge rb-h">HIGH</span></td><td style="font-family:var(--f-mono);font-size:12px">25–35%</td><td>ZK selective disclosure differentiates from mixers; compliance proofs architecturally possible</td></tr>
+          <tr><td class="rn">Protocol Displacement</td><td>Competitive</td><td><span class="rbadge rb-m">MEDIUM</span></td><td style="font-family:var(--f-mono);font-size:12px">30–45%</td><td>First-mover in ZK privacy middleware; narrative may outlive current leaders</td></tr>
+          <tr><td class="rn">ZK Cryptographic Vulnerability</td><td>Technical</td><td><span class="rbadge rb-h">HIGH</span></td><td style="font-family:var(--f-mono);font-size:12px">5–15%</td><td>Field maturation and audit practices reduce risk over time; math is provably sound</td></tr>
+          <tr><td class="rn">Ethereum Fragmentation</td><td>Ecosystem</td><td><span class="rbadge rb-m">MEDIUM</span></td><td style="font-family:var(--f-mono);font-size:12px">20–35%</td><td>Multi-chain expansion possible; Ethereum remains dominant settlement layer</td></tr>
+          <tr><td class="rn">Adoption Stagnation</td><td>Market</td><td><span class="rbadge rb-m">MEDIUM</span></td><td style="font-family:var(--f-mono);font-size:12px">40–55%</td><td>Privacy networks require critical mass; anonymity sets matter for meaningful privacy</td></tr>
+          <tr><td class="rn">Token Value Disconnect</td><td>Tokenomics</td><td><span class="rbadge rb-l">LOW</span></td><td style="font-family:var(--f-mono);font-size:12px">50–65%</td><td>Infrastructure tokens frequently fail to capture protocol value; governance utility matters</td></tr>
+          <tr><td class="rn">UX Complexity Barrier</td><td>Adoption</td><td><span class="rbadge rb-l">LOW</span></td><td style="font-family:var(--f-mono);font-size:12px">60–70%</td><td>ZK proof generation UX improving rapidly; wallet abstraction reduces friction over time</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pull" style="margin-top:36px">
+      <p>Distinguish carefully: some risks threaten <em>this project</em> while the narrative survives. Some risks threaten the narrative itself. Only the latter require maximum weight.</p>
+      <div class="pull-attr">Risk Calibration Note · RAILGUN Intelligence</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 SCENARIO -->
+<section id="scenario">
+  <div class="scenario-wrap">
+    <div class="sec-inner" style="padding-top:0;padding-bottom:0">
+      <div class="sec-header" style="margin-bottom:28px">
+        <div class="sec-num" style="color:rgba(200,250,60,0.12)">13</div>
+        <div>
+          <div class="sec-tag" style="color:rgba(200,250,60,0.55)">Future Simulation</div>
+          <div class="sec-h" style="color:#fff">2035 SCENARIO</div>
+        </div>
+      </div>
+      <div class="scenario-tag">SIMULATION: The AI-Tracked Financial World</div>
+      <div class="scenario-title">The Transparent<br>Wallet Crisis</div>
+      <div class="scenario-body">By 2035, the majority of global economic activity has some on-chain component. Central bank digital currencies interface with DeFi. Corporate procurement runs on public blockchains. AI agents manage trillions in autonomous assets. Every financial transaction permanently logged, analyzed by AI, cross-referenced with behavioral databases.<br><br>The cost of financial transparency — in strategic exposure, competitive disadvantage, and surveillance — has become intolerable for most economic actors. Privacy infrastructure protocols are no longer niche. They are the encryption layer of the financial internet.</div>
+      <div class="scenario-outcomes">
+        <div class="so-item"><div class="so-num">01</div><div class="so-text">Encrypted financial transactions become the default mode for institutional on-chain activity — privacy-as-standard, transparency-as-exception</div></div>
+        <div class="so-item"><div class="so-num">02</div><div class="so-text">Private transaction layers become regulatory requirements in privacy-forward jurisdictions, creating mandatory compliant ZK-based infrastructure</div></div>
+        <div class="so-item"><div class="so-num">03</div><div class="so-text">DAO treasury movements, corporate payments, and institutional positions all route through ZK shielded pools as standard practice</div></div>
+        <div class="so-item"><div class="so-num">04</div><div class="so-text">AI agents require privacy infrastructure as a competitive baseline — exposing strategy on-chain is equivalent to losing before executing</div></div>
+        <div class="so-item"><div class="so-num">05</div><div class="so-text">Privacy protocols integrate into mainstream DeFi as default layers — users access Uniswap, Aave, Compound through shielded interfaces</div></div>
+        <div class="so-item"><div class="so-num">06</div><div class="so-text">Protocols achieving critical mass in 2022–2027 become infrastructure incumbents, benefiting from network effects that cemented HTTPS as internet standard</div></div>
+      </div>
+      <div class="prob-list" style="margin-top:44px">
+        <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,250,60,0.38);margin-bottom:6px">2035 Probability Scenarios</div>
+        <div class="prob-item"><div class="prob-top"><span class="prob-name">Privacy infrastructure becomes standard on-chain layer</span><span class="prob-pct">72%</span></div><div class="prob-track"><div class="prob-fill" style="width:0%;background:var(--accent)" data-target="72%"></div></div></div>
+        <div class="prob-item"><div class="prob-top"><span class="prob-name">RAILGUN specifically captures significant market share</span><span class="prob-pct">38%</span></div><div class="prob-track"><div class="prob-fill" style="width:0%;background:#a78bfa" data-target="38%"></div></div></div>
+        <div class="prob-item"><div class="prob-top"><span class="prob-name">Regulatory prohibition halts privacy protocol growth</span><span class="prob-pct">18%</span></div><div class="prob-track"><div class="prob-fill" style="width:0%;background:var(--accent2)" data-target="18%"></div></div></div>
+        <div class="prob-item"><div class="prob-top"><span class="prob-name">AI surveillance urgency accelerates adoption timeline</span><span class="prob-pct">65%</span></div><div class="prob-track"><div class="prob-fill" style="width:0%;background:#34d399" data-target="65%"></div></div></div>
+        <div class="prob-item"><div class="prob-top"><span class="prob-name">ZK becomes dominant encryption paradigm for finance</span><span class="prob-pct">81%</span></div><div class="prob-track"><div class="prob-fill" style="width:0%;background:var(--accent)" data-target="81%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 SURVIVABILITY -->
+<section id="survivability">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">14</div>
+      <div>
+        <div class="sec-tag">Survivability Analysis</div>
+        <div class="sec-h">SURVIVABILITY SCORE</div>
+      </div>
+    </div>
+    <p class="sec-lead">A composite assessment of RAILGUN's probability of remaining a viable and relevant protocol over a 10-year horizon.</p>
+    <div class="gauge-section">
+      <div class="gauge-left">
+        <div class="gauge-num-big">78</div>
+        <div class="gauge-denom">/ 100</div>
+        <canvas id="gaugeChart" width="150" height="75" style="margin-top:18px"></canvas>
+        <div class="gauge-label-text">Survivability Score<br>10-Year Horizon</div>
+      </div>
+      <div class="gauge-right">
+        <div class="gauge-title">Above-Average Survival Probability</div>
+        <div class="gauge-items">
+          <div class="gi"><div class="gi-marker" style="background:var(--accent)"></div><div class="gi-text"><strong>Technical foundation is sound.</strong> ZK cryptography is a provably correct approach to the privacy problem. The math works, and the math does not change.</div></div>
+          <div class="gi"><div class="gi-marker" style="background:var(--accent3)"></div><div class="gi-text"><strong>Narrative durability is strong.</strong> The problem RAILGUN solves becomes more important, not less, as the world evolves toward on-chain economies.</div></div>
+          <div class="gi"><div class="gi-marker" style="background:#fbbf24"></div><div class="gi-text"><strong>Regulatory risk is real but manageable.</strong> ZK selective disclosure provides a compliance path that opaque mixers fundamentally cannot offer.</div></div>
+          <div class="gi"><div class="gi-marker" style="background:var(--accent2)"></div><div class="gi-text"><strong>Competitive displacement is a genuine risk.</strong> Larger protocols may adopt privacy layers natively, potentially displacing dedicated privacy middleware.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 VERDICT -->
+<section id="verdict">
+  <div class="sec-inner">
+    <div class="sec-header">
+      <div class="sec-num">15</div>
+      <div>
+        <div class="sec-tag">Final Intelligence Verdict</div>
+        <div class="sec-h">THE VERDICT</div>
+      </div>
+    </div>
+    <div class="verdict-split">
+      <div class="vs-block">
+        <div class="vs-head head-bull"><div class="dot"></div>Strategic Bull Case</div>
+        <div class="vs-item"><div class="vs-tick" style="color:#16a34a">✓</div><div class="vs-text">RAILGUN addresses a problem that structurally compounds as AI surveillance, on-chain adoption, and institutional DeFi simultaneously expand — three independent demand drivers converging on one solution.</div></div>
+        <div class="vs-item"><div class="vs-tick" style="color:#16a34a">✓</div><div class="vs-text">ZK-proof architecture is architecturally superior to opacity-based privacy for long-term regulatory survival — selective disclosure capability provides a compliance pathway mixers cannot match.</div></div>
+        <div class="vs-item"><div class="vs-tick" style="color:#16a34a">✓</div><div class="vs-text">DeFi composability is maintained — unlike privacy chains that isolate users. This architectural decision may prove decisive for institutional adoption at scale.</div></div>
+        <div class="vs-item"><div class="vs-tick" style="color:#16a34a">✓</div><div class="vs-text">The gap between narrative strength (86) and token recognition (58) represents the classic early-infrastructure pricing pattern that precedes major revaluation events in other infrastructure categories.</div></div>
+      </div>
+      <div class="vs-block" style="background:var(--paper2)">
+        <div class="vs-head head-bear"><div class="dot"></div>Strategic Bear Case</div>
+        <div class="vs-item"><div class="vs-tick" style="color:var(--accent2)">⚠</div><div class="vs-text">Regulatory prohibition remains the highest-severity narrative-level risk. A broad privacy protocol ban following the Tornado Cash precedent would damage the category, not just this project.</div></div>
+        <div class="vs-item"><div class="vs-tick" style="color:var(--accent2)">⚠</div><div class="vs-text">RAILGUN's narrative may prove correct while RAILGUN specifically fails to capture the value. Larger protocols may natively integrate ZK privacy, displacing dedicated middleware.</div></div>
+        <div class="vs-item"><div class="vs-tick" style="color:var(--accent2)">⚠</div><div class="vs-text">UX complexity and liquidity chicken-and-egg problems remain real adoption barriers. Privacy networks require critical user mass for meaningful anonymity sets.</div></div>
+        <div class="vs-item"><div class="vs-tick" style="color:var(--accent2)">⚠</div><div class="vs-text">Token strength (58/100) reflects a structural concern: infrastructure protocol tokens frequently fail to capture protocol value proportionally when fee capture mechanisms are weak.</div></div>
+      </div>
+    </div>
+    <div class="final-box">
+      <div class="final-head">Final Intelligence Verdict · RAILGUN · RAIL</div>
+      <div class="final-text">RAILGUN represents early-stage infrastructure for a problem the world has not yet recognized as urgent — but <em>will</em>. The historical pattern of privacy infrastructure adoption suggests systems like RAILGUN are built early, ignored for years, then adopted rapidly when a catalyst makes the absence of privacy intolerable. <em>AI-driven surveillance expansion</em> is the most probable catalyst. The narrative is strong. The technical foundation is sound. The window of early positioning remains open.</div>
+      <div class="verdict-pills">
+        <div class="vpill"><span>NARRATIVE</span>Structurally Compelling</div>
+        <div class="vpill"><span>PROJECT</span>Positioned, Not Proven</div>
+        <div class="vpill"><span>TOKEN</span>Underrecognized Risk</div>
+        <div class="vpill"><span>10-YEAR</span>Infrastructure-Class Potential</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="playbook" style="border-bottom:2px solid var(--ink)">
+  <div class="playbook-hero">
+    <div class="pb-kicker">Section 16 · Investor Intelligence</div>
+    <div class="pb-title">THE INVESTOR<br>PLAYBOOK</div>
+    <div class="pb-sub">
+      What should a general investor actually do with RAIL over the next 10 years — if they believe the narrative? This section separates strategy from speculation. It does not tell you to buy. It tells you how to think, when to act, how much to risk, what to watch for, and when to walk away.
+    </div>
+    <div class="pb-warning">
+      <div class="pb-warn-icon">⚠</div>
+      <div class="pb-warn-text">This section is analytical intelligence framing — not financial advice. Crypto assets can go to zero. RAIL is a high-risk, small-cap infrastructure token. The strategies below are frameworks for thinking, not instructions. Size positions according to your own risk tolerance and always consult a financial professional. Nothing here constitutes a recommendation to buy or sell any asset.</div>
+    </div>
+  </div>
+
+  <div class="pb-body">
+
+    <!-- CORE INVESTOR PREMISE -->
+    <div class="pb-mindset" style="margin-top:36px">
+      <div class="pm-text">The correct frame is not <em>"will RAIL go up?"</em> — it is <em>"does this problem become unavoidable?"</em> If yes, position early and hold through noise. If uncertain, size small and watch the catalysts.</div>
+      <div class="pm-attr">Core Investor Premise · RAILGUN Playbook</div>
+    </div>
+
+    <!-- THREE PHASES -->
+    <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin:36px 0 10px">The Three-Phase Investment Arc</div>
+    <div class="pb-phases">
+      <div class="pb-phase">
+        <div class="ph-num">01</div>
+        <div class="ph-label">Phase · Now → 2026</div>
+        <div class="ph-title">Discovery & Accumulation</div>
+        <div class="ph-body">The narrative is ahead of the market. Token strength (58/100) sits well below narrative strength (86/100). This divergence is the opportunity window. Early infrastructure protocols are typically ignored for 2–4 years before a catalyst accelerates recognition. This is the quiet accumulation phase — characterized by low retail attention, weak volume, and undervalued positioning relative to long-term potential.<br><br>The risk here is maximum. You are betting on a future state that has not materialized. Position size should reflect that honestly.</div>
+        <div class="ph-trigger">Entry signal to watch:<span>Any 2+ of the catalyst events listed below trigger simultaneously. Don't chase price — watch adoption metrics and regulatory clarity.</span></div>
+      </div>
+      <div class="pb-phase">
+        <div class="ph-num">02</div>
+        <div class="ph-label">Phase · 2026 → 2029</div>
+        <div class="ph-title">Catalyst Confirmation</div>
+        <div class="ph-body">This is the phase where the narrative either proves out or fails. At least one major catalyst — institutional DeFi adoption at scale, a significant AI surveillance incident driving privacy awareness, or a clear regulatory framework differentiating ZK from mixers — will either validate or invalidate the thesis.<br><br>If catalysts arrive, this phase likely sees the largest price appreciation as narrative gap closes rapidly. The mid-phase investor who waited for confirmation sacrifices some upside for substantially lower risk. This is the rational choice for most general investors.</div>
+        <div class="ph-trigger">Watch for:<span>TVL in shielded pools growing quarter-over-quarter, enterprise or DAO announcements, regulatory guidance specifically addressing ZK-based privacy.</span></div>
+      </div>
+      <div class="pb-phase">
+        <div class="ph-num">03</div>
+        <div class="ph-label">Phase · 2029 → 2035</div>
+        <div class="ph-title">Infrastructure Recognition</div>
+        <div class="ph-body">If RAILGUN survives to this phase with meaningful adoption, it enters the infrastructure recognition arc — the period where protocols that built essential layers see long-duration value accrual as the ecosystem depends on them. Think AWS 2012–2020 rather than a speculative flip.<br><br>Investors in this phase are making a very different bet: not on early narrative capture but on durable infrastructure value. Lower ceiling, lower risk. The token economics need to support this — fee capture, governance value, and staking yields become the primary value drivers rather than speculation.</div>
+        <div class="ph-trigger">Long-term signal:<span>When privacy is discussed as infrastructure in institutional DeFi research — not as a privacy "feature" — the narrative has arrived. This is typically the sell signal for early investors.</span></div>
+      </div>
+    </div>
+
+    <!-- POSITION STRATEGIES -->
+    <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin:0 0 10px">Position Strategy by Risk Profile</div>
+    <div class="pb-strategies">
+      <div class="pb-strat">
+        <div class="ps-label">Strategy A</div>
+        <div class="ps-title">Conviction Accumulation</div>
+        <div class="ps-body">For investors who have high conviction in the narrative and can stomach volatility: accumulate a fixed position now during the discovery phase. Use a dollar-cost-averaging approach across 6–12 months to smooth entry price. Do not trade around it. Set a 4+ year minimum hold horizon. This strategy captures the maximum upside if the thesis plays out — and accepts maximum downside if it doesn't.<br><br>Define your exit before you enter: pick 2–3 fundamental milestones (e.g. sustained TVL growth, institutional adoption announcement, regulatory clarity) as your re-evaluation triggers, not price targets.</div>
+        <span class="ps-tag tag-aggressive">High Risk · High Potential</span>
+      </div>
+      <div class="pb-strat">
+        <div class="ps-label">Strategy B</div>
+        <div class="ps-title">Catalyst-Triggered Entry</div>
+        <div class="ps-body">For investors who want narrative exposure with lower early-stage risk: wait for 1–2 catalyst events to trigger before establishing a position. You will pay more per token — but you are buying confirmation, not speculation. This is structurally similar to how institutional money enters infrastructure plays: wait for proof-of-demand, then scale in.<br><br>Suitable for investors allocating from a diversified crypto portfolio. Keep RAIL below 5–8% of total crypto allocation regardless of conviction, given the structural risks (regulatory, competitive displacement, token-value disconnect).</div>
+        <span class="ps-tag tag-balanced">Balanced Risk · Confirmed Entry</span>
+      </div>
+      <div class="pb-strat">
+        <div class="ps-label">Strategy C</div>
+        <div class="ps-title">Satellite Monitoring Position</div>
+        <div class="ps-body">For investors who find the narrative interesting but the risk profile uncomfortable: take a small exploratory position (1–2% of crypto portfolio) now purely to stay engaged and motivated to monitor the thesis. The financial exposure is low enough that volatility doesn't distort judgment. The position keeps you watching the catalysts, the on-chain metrics, and the competitive landscape with real skin in the game.<br><br>This is intellectually honest investing: acknowledging you believe the narrative might matter without overcommitting before confirmation arrives.</div>
+        <span class="ps-tag tag-conservative">Low Exposure · High Optionality</span>
+      </div>
+      <div class="pb-strat">
+        <div class="ps-label">Strategy D</div>
+        <div class="ps-title">ZK Privacy Basket</div>
+        <div class="ps-body">For investors who believe in the ZK privacy narrative but are uncertain whether RAILGUN specifically captures the value: build a basket of ZK privacy infrastructure tokens. RAILGUN represents one protocol-level bet within a broader thesis. A basket approach hedges against the competitive displacement risk — the most likely way to be correct on the narrative while being wrong on the specific token.<br><br>This is structurally how sophisticated investors approach early infrastructure narratives: buy the category, not just the leader. Concentration risk in a single protocol in a nascent category is the primary way correct theses produce negative returns.</div>
+        <span class="ps-tag tag-balanced">Diversified · Narrative-Level Bet</span>
+      </div>
+    </div>
+
+    <!-- POSITION SIZING TABLE -->
+    <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin:0 0 10px">Suggested Portfolio Allocation by Investor Profile</div>
+    <div class="pb-sizing">
+      <div class="sizing-row">
+        <div class="sr-profile"><div class="sr-profile-label">Profile</div></div>
+        <div class="sr-strategy"><div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.28)">Approach</div></div>
+        <div class="sr-alloc" style="font-size:12px;color:rgba(255,255,255,0.28);font-family:var(--f-mono);letter-spacing:1px;text-transform:uppercase">Max %</div>
+      </div>
+      <div class="sizing-row">
+        <div class="sr-profile"><div class="sr-profile-label">Type</div><div class="sr-profile-name">Crypto-native speculator</div></div>
+        <div class="sr-strategy">High conviction in ZK privacy narrative, comfortable with 80–100% drawdowns, 5+ year horizon. Can use Strategy A or B. Treat as venture-style bet.</div>
+        <div class="sr-alloc">8–12%</div>
+      </div>
+      <div class="sizing-row">
+        <div class="sr-profile"><div class="sr-profile-label">Type</div><div class="sr-profile-name">Active crypto investor</div></div>
+        <div class="sr-strategy">Holds diversified crypto portfolio, understands infrastructure narratives, medium conviction. Strategy B or D (basket). Wait for at least one catalyst trigger.</div>
+        <div class="sr-alloc">3–6%</div>
+      </div>
+      <div class="sizing-row">
+        <div class="sr-profile"><div class="sr-profile-label">Type</div><div class="sr-profile-name">General investor, crypto exposure</div></div>
+        <div class="sr-strategy">Crypto is a small portion of total portfolio. Interested in narrative, uncertain on execution. Strategy C (satellite) or wait for Phase 2 catalyst confirmation before sizing up.</div>
+        <div class="sr-alloc">1–3%</div>
+      </div>
+      <div class="sizing-row">
+        <div class="sr-profile"><div class="sr-profile-label">Type</div><div class="sr-profile-name">Traditional investor</div></div>
+        <div class="sr-strategy">Limited crypto experience. If interested, treat as pure speculation with money you can afford to lose entirely. Never more than this of total investable assets. Prefer to wait for Phase 2 confirmation.</div>
+        <div class="sr-alloc">&lt;1%</div>
+      </div>
+    </div>
+
+    <!-- CATALYSTS TO WATCH -->
+    <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin:0 0 10px">Catalyst Events to Monitor — The Thesis Triggers</div>
+    <div class="pb-catalysts">
+      <div class="cat-header">
+        <span>Catalyst Event</span>
+        <span>Impact Level</span>
+        <span>Est. Timing</span>
+      </div>
+      <div class="cat-row">
+        <div><div class="cat-name">Major AI surveillance incident targeting on-chain wallets</div><div class="cat-desc">A high-profile case where transparent blockchain data is used to financially harm or expose individuals or organizations — driving mainstream demand for privacy infrastructure</div></div>
+        <div><span class="cat-impact ci-very-high">Very High</span></div>
+        <div class="cat-timing">2025–2027<br>Unpredictable</div>
+      </div>
+      <div class="cat-row">
+        <div><div class="cat-name">Regulatory framework distinguishing ZK from mixers</div><div class="cat-desc">A clear legal precedent or regulatory guidance in a major jurisdiction explicitly recognizing ZK-proof selective disclosure as compliant privacy — removing the Tornado Cash overhang</div></div>
+        <div><span class="cat-impact ci-very-high">Very High</span></div>
+        <div class="cat-timing">2026–2028<br>Moderate prob.</div>
+      </div>
+      <div class="cat-row">
+        <div><div class="cat-name">Significant DAO or institutional RAILGUN adoption</div><div class="cat-desc">A major DAO treasury (top 20 by AUM), institutional fund, or enterprise publicly adopting RAILGUN for treasury operations or transaction privacy</div></div>
+        <div><span class="cat-impact ci-very-high">Very High</span></div>
+        <div class="cat-timing">2025–2027<br>Moderate prob.</div>
+      </div>
+      <div class="cat-row">
+        <div><div class="cat-name">AI agent ecosystem integration</div><div class="cat-desc">An autonomous AI agent framework — Virtuals, ai16z, or a major DeFi protocol — integrating RAILGUN for private on-chain execution as a default capability</div></div>
+        <div><span class="cat-impact ci-high">High</span></div>
+        <div class="cat-timing">2026–2028<br>Emerging</div>
+      </div>
+      <div class="cat-row">
+        <div><div class="cat-name">Sustained TVL growth in shielded pools</div><div class="cat-desc">Quarter-over-quarter growth in total value locked in RAILGUN shielded pools for 3+ consecutive quarters — demonstrating organic, growing adoption rather than speculative flows</div></div>
+        <div><span class="cat-impact ci-high">High</span></div>
+        <div class="cat-timing">Ongoing<br>Monitor now</div>
+      </div>
+      <div class="cat-row">
+        <div><div class="cat-name">Major L1/L2 privacy partnership or integration</div><div class="cat-desc">A large Ethereum L2 (Arbitrum, Base, Optimism) or a major DeFi protocol (Uniswap, Aave, Curve) formally integrating RAILGUN privacy as a native feature</div></div>
+        <div><span class="cat-impact ci-medium">Medium</span></div>
+        <div class="cat-timing">2026–2029<br>Lower prob.</div>
+      </div>
+    </div>
+
+    <!-- EXIT SIGNALS -->
+    <div style="font-family:var(--f-mono);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);margin:0 0 10px">Exit Signal Framework — When to Reassess or Walk Away</div>
+    <div class="pb-exits">
+      <div class="exit-block">
+        <div class="exit-head eh-bull"><div class="exit-dot"></div>Take-Profit Signals (Good Exit)</div>
+        <div class="exit-item"><div class="exit-tick" style="color:#4ade80">↑</div><div class="exit-text">Privacy infrastructure narrative achieves mainstream recognition — RAIL appears in institutional research reports, Bloomberg analysis, and mainstream finance publications as an established infrastructure category</div></div>
+        <div class="exit-item"><div class="exit-tick" style="color:#4ade80">↑</div><div class="exit-text">2–3 major catalyst events have triggered and RAIL has re-rated significantly. The "narrative discount" has closed — token strength approaches narrative strength score. The easy money is made.</div></div>
+        <div class="exit-item"><div class="exit-tick" style="color:#4ade80">↑</div><div class="exit-text">A dominant competitor (major L2, Ethereum protocol natively) ships ZK privacy as a default layer — RAILGUN's specific competitive moat is eroded even if the broader narrative was correct</div></div>
+        <div class="exit-item"><div class="exit-tick" style="color:#4ade80">↑</div><div class="exit-text">Your position has reached a size where it materially affects your financial wellbeing if it goes to zero. Trim to a level where you can hold through a full bear cycle without distress.</div></div>
+      </div>
+      <div class="exit-block" style="background:rgba(255,60,47,0.04)">
+        <div class="exit-head eh-bear"><div class="exit-dot"></div>Stop-Loss Signals (Thesis Invalidation)</div>
+        <div class="exit-item"><div class="exit-tick" style="color:#ff6b5b">↓</div><div class="exit-text">Regulatory prohibition specifically targeting ZK privacy protocols — not just mixers. If RAILGUN's architecture is legally classified similarly to Tornado Cash in major jurisdictions, the narrative faces structural damage, not just delay.</div></div>
+        <div class="exit-item"><div class="exit-tick" style="color:#ff6b5b">↓</div><div class="exit-text">A significant ZK cryptographic vulnerability discovered in RAILGUN's proving system — especially if it involves actual user fund exposure or privacy compromise. Technical trust is the foundation of the entire thesis.</div></div>
+        <div class="exit-item"><div class="exit-tick" style="color:#ff6b5b">↓</div><div class="exit-text">Three or more years of flat-to-declining TVL with no institutional traction despite a favorable macro environment — suggesting the product-market fit assumption was wrong, not just early</div></div>
+        <div class="exit-item"><div class="exit-tick" style="color:#ff6b5b">↓</div><div class="exit-text">Core team exodus, governance capture, or protocol fork that splinters the community and liquidity — infrastructure value depends heavily on network effects that are difficult to rebuild once fragmented</div></div>
+      </div>
+    </div>
+
+    <!-- FINAL MINDSET -->
+    <div class="pb-mindset">
+      <div class="pm-text">The honest answer: <em>most investors should wait for Phase 2.</em> The narrative is strong. The timing is uncertain. Sizing small and watching the catalysts is not cowardice — it is how correct long-term theses are captured without being destroyed by early-stage volatility that has nothing to do with the thesis being right or wrong.</div>
+      <div class="pm-attr">Investor Playbook · Final Guidance · RAILGUN Intelligence Report</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="footnote">
+  <strong>Research Disclaimer</strong> — This report represents analytical research and intelligence synthesis, not financial advice. Crypto assets carry extreme risk. The Investor Playbook section is a framework for structured thinking — not a recommendation to buy, sell, or hold any asset. Narrative Strength scores measure the importance of the problem being solved and alignment with future trends — not the probability of investment returns. Allocation percentages are illustrative ranges only and must be calibrated to your individual financial situation, risk tolerance, and jurisdiction. Always conduct independent due diligence and consult a qualified financial professional. RAILGUN / RAIL · Intelligence Report · 2025
+</div>
+
+</div><!-- /content -->
+
+<script>
+// SPINE ACTIVE STATE
+const spineLinks = document.querySelectorAll('.spine-link');
+const sectionIds = ['overview','origin','problem','why','market','trends','signals','ecosystem','dependency','lifecycle','ai','risks','scenario','survivability','verdict','playbook'];
+
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = sectionIds.indexOf(e.target.id);
+      if (idx >= 0) spineLinks.forEach((l, i) => l.classList.toggle('on', i === idx));
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+
+document.querySelectorAll('[id]').forEach(s => io.observe(s));
+
+// SCORE BAR + PROB BAR ANIMATION
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('[data-target]').forEach(el => {
+      setTimeout(() => { el.style.width = el.dataset.target; }, 200);
+    });
+    barObs.unobserve(e.target);
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.hero-right, section').forEach(s => barObs.observe(s));
+
+setTimeout(() => {
+  document.querySelectorAll('.hero-right [data-target]').forEach(el => { el.style.width = el.dataset.target; });
+}, 500);
+
+// CHARTS
+const INK = '#0a0a0a', MUTED = '#8a8778';
+const LIME = '#c8fa3c', RED = '#ff3c2f', BLUE = '#1a1aff', GOLD = '#fbbf24';
+
+// Radar
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Narrative', 'Project', 'Token', 'Relevance', 'Survival'],
+    datasets: [{
+      data: [86, 71, 58, 90, 78],
+      borderColor: RED, backgroundColor: 'rgba(255,60,47,0.07)',
+      borderWidth: 2, pointBackgroundColor: RED, pointRadius: 4, pointHoverRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      r: {
+        min: 0, max: 100,
+        grid: { color: 'rgba(10,10,10,0.1)' },
+        angleLines: { color: 'rgba(10,10,10,0.1)' },
+        ticks: { display: false, stepSize: 25 },
+        pointLabels: { color: MUTED, font: { size: 11, family: "'Courier Prime', monospace" } }
+      }
+    }
+  }
+});
+
+// Attention
+new Chart(document.getElementById('attentionChart'), {
+  type: 'line',
+  data: {
+    labels: ['2021','2022','2023','2024','2025','2027','2030','2035'],
+    datasets: [
+      { label: 'Privacy Infra Demand', data: [3, 5, 8, 12, 18, 32, 58, 92], borderColor: RED, backgroundColor: 'rgba(255,60,47,0.05)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: RED },
+      { label: 'Mainstream Attention', data: [2, 3, 4, 6, 9, 18, 42, 88], borderColor: INK, backgroundColor: 'rgba(10,10,10,0.03)', fill: true, tension: 0.4, borderWidth: 1.5, borderDash: [5,3], pointRadius: 3, pointBackgroundColor: INK }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(10,10,10,0.06)' }, ticks: { color: MUTED, font: { size: 10, family: "'Courier Prime', monospace" } } },
+      y: { grid: { color: 'rgba(10,10,10,0.06)' }, ticks: { color: MUTED, font: { size: 10 } }, max: 100 }
+    }
+  }
+});
+
+// Lifecycle
+new Chart(document.getElementById('lifecycleChart'), {
+  type: 'line',
+  data: {
+    labels: ['Y0','Y2','Y4','Y6','Y8','Y10','Y12','Y14','Y16','Y18'],
+    datasets: [
+      { label: 'HTTPS (Historical)', data: [1, 2, 4, 6, 8, 12, 22, 45, 70, 92], borderColor: MUTED, backgroundColor: 'rgba(138,135,120,0.05)', fill: true, tension: 0.4, borderWidth: 1.5, borderDash: [6,4], pointRadius: 2, pointBackgroundColor: MUTED },
+      { label: 'ZK Privacy (Projected)', data: [2, 4, 7, 11, 18, 29, 46, 65, 81, 94], borderColor: BLUE, backgroundColor: 'rgba(26,26,255,0.04)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: BLUE }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(10,10,10,0.06)' }, ticks: { color: MUTED, font: { size: 10 } } },
+      y: { grid: { color: 'rgba(10,10,10,0.06)' }, ticks: { color: MUTED, font: { size: 10 } }, max: 100 }
+    }
+  }
+});
+
+// AI Threat
+new Chart(document.getElementById('aiThreatChart'), {
+  type: 'bar',
+  data: {
+    labels: ['AI Trading Agents','Institutional Funds','DAO Treasuries','DeFi Strategists','Power Users','Individual Wallets'],
+    datasets: [{
+      data: [95, 88, 82, 75, 60, 40],
+      backgroundColor: ['rgba(255,60,47,0.82)','rgba(255,60,47,0.65)','rgba(251,191,36,0.82)','rgba(251,191,36,0.62)','rgba(10,10,10,0.32)','rgba(10,10,10,0.16)'],
+      borderColor: [RED, RED, GOLD, GOLD, INK, INK],
+      borderWidth: 1.5, borderRadius: 2,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(10,10,10,0.06)' }, ticks: { color: MUTED, font: { size: 10 } }, max: 100 },
+      y: { grid: { display: false }, ticks: { color: INK, font: { size: 11, family: "'Manrope', sans-serif", weight: '500' } } }
+    }
+  }
+});
+
+// Gauge arc
+(function() {
+  const c = document.getElementById('gaugeChart');
+  const ctx = c.getContext('2d');
+  const cx = 75, cy = 70, r = 50;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, Math.PI, 2*Math.PI);
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.stroke();
+  const g = ctx.createLinearGradient(cx-r, cy, cx+r, cy);
+  g.addColorStop(0, 'rgba(200,250,60,0.25)'); g.addColorStop(1, '#c8fa3c');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, Math.PI, Math.PI + (78/100)*Math.PI);
+  ctx.strokeStyle = g; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.stroke();
+})();
+</script>
+</body>
+</html>
